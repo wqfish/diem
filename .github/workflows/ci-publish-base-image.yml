@@ -3,15 +3,15 @@ name: Publish Base CI Image To Dockerhub
 on:
   push:
     branches: [main, master, release-*, gha-test-*]
-    paths:
-      [
-        .github/workflows/ci-publish-base-image.yml,
-        .github/actions/dockerhub_login/action.yml,
-        docker/ci/github/Dockerfile,
-        scripts/dev_setup.sh,
-        rust-toolchain,
-        cargo-toolchain,
-      ]
+    #paths:
+    #  [
+    #    .github/workflows/ci-publish-base-image.yml,
+    #    .github/actions/dockerhub_login/action.yml,
+    #    docker/ci/github/Dockerfile,
+    #    scripts/dev_setup.sh,
+    #    rust-toolchain,
+    #    cargo-toolchain,
+    #  ]
 
 jobs:
   build_docker_images:
@@ -34,7 +34,7 @@ jobs:
         with:
           workflow-file: ci-publish-base-image.yml
       - name: build image
-        run: docker build -f docker/ci/github/Dockerfile -t ${{ env.DOCKERHUB_ORG }}/build_environment:${{ steps.changes.outputs.changes-target-branch }} .
+        run: docker build -f docker/ci/github/Dockerfile -t ${{ env.DOCKERHUB_ORG }}/build_environment:main .
       - name: Sign in to dockerhub, install image signing cert.
         uses: ./.github/actions/dockerhub_login
         with:
@@ -50,7 +50,7 @@ jobs:
             if [[ "$DOCKERHUB_CAN_SIGN" == true ]]; then
               disable_content_trust=false
             fi
-            docker push --disable-content-trust=${disable_content_trust} ${{ env.DOCKERHUB_ORG }}/build_environment:${{ steps.changes.outputs.changes-target-branch }}
+            docker push --disable-content-trust=${disable_content_trust} ${{ env.DOCKERHUB_ORG }}/build_environment:main
           fi
         env:
           DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ secrets.DOCKERHUB_KEY_PASSWORD }}
