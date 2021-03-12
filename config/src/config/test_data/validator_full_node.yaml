@@ -37,8 +37,3 @@ full_node_networks:
     - discovery_method: "onchain"
       listen_address: "/ip4/0.0.0.0/tcp/8180"
       network_id: "public"
-
-upstream:
-    networks:
-        - private: vfn
-        - public
